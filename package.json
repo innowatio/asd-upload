@@ -1,0 +1,45 @@
+{
+  "name": "asd-upload",
+  "version": "1.0.0",
+  "description": "Deploy static web-apps on AWS",
+  "main": "lib/asd-upload.js",
+  "bin": {
+    "asd-upload": "./bin/asd-upload.js",
+  },
+  "scripts": {
+    "build": "babel src --out-dir lib",
+    "clean": "rimraf lib coverage",
+    "coverage": "NODE_ENV=test babel-node $(npm bin)/isparta cover $(npm bin)/_mocha -- --recursive",
+    "coveralls": "cat coverage/lcov.info | coveralls",
+    "dev": "npm test -- --watch",
+    "lint": "eslint src test",
+    "prepublish": "npm run clean && npm run build",
+    "test": "NODE_ENV=test mocha --compilers js:babel-core/register --recursive"
+  },
+  "author": "Paolo Scanferla <paolo.scanferla@mondora.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mondora/asd-upload.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mondora/asd-upload/issues"
+  },
+  "devDependencies": {
+    "babel": "^6.3.13",
+    "babel-cli": "^6.3.13",
+    "babel-core": "^6.3.13",
+    "babel-eslint": "^5.0.0-beta6",
+    "chai": "^3.4.1",
+    "coveralls": "^2.11.4",
+    "eslint": "^1.10.3",
+    "isparta": "^4.0.0",
+    "mocha": "^2.3.4",
+    "sinon": "^1.17.2",
+    "sinon-chai": "^2.8.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.2.22",
+    "s3": "^4.4.0"
+  }
+}
