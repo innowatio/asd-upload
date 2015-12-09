@@ -28,7 +28,7 @@ if (process.env.TRAVIS_PULL_REQUEST === "false") {
                 localDir: APP_SOURCE_DIR,
                 s3Params: {
                     Bucket: S3_BUCKET,
-                    Prefix: `/${APP_DOMAIN}/${APP_STAGE}`
+                    Prefix: `${APP_DOMAIN}/${APP_STAGE}`
                 }
             })
             .on("end", () => {
