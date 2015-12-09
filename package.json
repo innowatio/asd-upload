@@ -4,7 +4,7 @@
   "description": "Deploy static web-apps on AWS",
   "main": "lib/asd-upload.js",
   "bin": {
-    "asd-upload": "./bin/asd-upload.js",
+    "asd-upload": "./bin/asd-upload.js"
   },
   "scripts": {
     "build": "babel src --out-dir lib",
