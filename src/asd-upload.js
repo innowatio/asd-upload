@@ -1,11 +1,19 @@
 import {S3} from "aws-sdk";
+import {execSync} from "child_process";
 import s3 from "s3";
+
+function getAppStage () {
+    return (
+        process.env.APP_STAGE ||
+        execSync("git rev-parse --abbrev-ref HEAD")
+    );
+}
 
 const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 const S3_BUCKET = process.env.S3_BUCKET;
 const APP_DOMAIN = process.env.APP_DOMAIN;
-const APP_STAGE = process.env.APP_DOMAIN;
+const APP_STAGE = getAppStage();
 const APP_SOURCE_DIR = process.argv[2];
 
 const s3Client = new S3({
