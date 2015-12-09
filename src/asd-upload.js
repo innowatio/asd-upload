@@ -1,19 +1,11 @@
 import {S3} from "aws-sdk";
-import {execSync} from "child_process";
 import s3 from "s3";
-
-function getAppStage () {
-    return (
-        process.env.APP_STAGE ||
-        execSync("git rev-parse --abbrev-ref HEAD")
-    );
-}
 
 const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 const S3_BUCKET = process.env.S3_BUCKET;
 const APP_DOMAIN = process.env.APP_DOMAIN;
-const APP_STAGE = getAppStage();
+const APP_STAGE = process.env.TRAVIS_BRANCH;
 const APP_SOURCE_DIR = process.argv[2];
 
 const s3Client = new S3({
@@ -22,23 +14,25 @@ const s3Client = new S3({
     secretAccessKey: AWS_SECRET_ACCESS_KEY
 });
 
-s3Client.getBucketLocation({Bucket: S3_BUCKET}, (err, res) => {
-    s3
-        .createClient({
-            s3Options: {
-                accessKeyId: AWS_ACCESS_KEY_ID,
-                secretAccessKey: AWS_SECRET_ACCESS_KEY,
-                region: res.LocationConstraint
-            }
-        })
-        .uploadDir({
-            localDir: APP_SOURCE_DIR,
-            s3Params: {
-                Bucket: S3_BUCKET,
-                Prefix: `/${APP_DOMAIN}/${APP_STAGE}`
-            }
-        })
-        .on("end", () => {
-            console.log("Uploaded succeeded");
-        });
-});
+if (process.env.TRAVIS_PULL_REQUEST === "false") {
+    s3Client.getBucketLocation({Bucket: S3_BUCKET}, (err, res) => {
+        s3
+            .createClient({
+                s3Options: {
+                    accessKeyId: AWS_ACCESS_KEY_ID,
+                    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+                    region: res.LocationConstraint
+                }
+            })
+            .uploadDir({
+                localDir: APP_SOURCE_DIR,
+                s3Params: {
+                    Bucket: S3_BUCKET,
+                    Prefix: `/${APP_DOMAIN}/${APP_STAGE}`
+                }
+            })
+            .on("end", () => {
+                console.log("Uploaded succeeded");
+            });
+    });
+}
